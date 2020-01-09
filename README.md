@@ -81,8 +81,8 @@ $ cat replacedManifest.yml | grep image:
 $ trimg transfer -f testfiles/input/replicaset.yml
 $ trimg replace testfiles/input/replicaset.yml > replacedManifest.yml
 
-// kubernetes on EKN
-$ kubectl cluster-info | grep master                                                                                            446ms  Thu Jan  9 22:07:46 2020
+// kubernetes on EKS
+$ kubectl cluster-info | grep master
 Kubernetes master is running at https://......eks.amazonaws.com
 
 // deploy replaced manifes
