@@ -1,0 +1,21 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: hello
+spec:
+  schedule: "*/1 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: hello
+              image: 999222333444.dkr.ecr.us-west-1.amazonaws.com/busybox
+              args:
+                - /bin/sh
+                - -c
+                - date; echo "Hello, World!"
+          restartPolicy: OnFailure
+          initContainers:
+            - name: initContainer
+              image: 999222333444.dkr.ecr.us-west-1.amazonaws.com/redis
