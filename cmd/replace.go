@@ -66,15 +66,20 @@ get the value of the image from the manifest file and replace it to the path of 
 
 		result := ""
 		for i, y := range yamls {
+			var d []byte
 			replacedManifest, err := pkg.ReplaceUsingImages(y, region, accountId)
 			if err != nil {
-				fmt.Printf("%v\n", err)
-				os.Exit(1)
-			}
-			d, err := yaml.Marshal(replacedManifest)
-			if err != nil {
-				fmt.Printf("%v\n", err)
-				os.Exit(1)
+				d, err = yaml.Marshal(y)
+				if err != nil {
+					fmt.Printf("%v\n", err)
+					os.Exit(1)
+				}
+			} else {
+				d, err = yaml.Marshal(replacedManifest)
+				if err != nil {
+					fmt.Printf("%v\n", err)
+					os.Exit(1)
+				}
 			}
 			if i != 0 {
 				result += "---\n" + string(d)

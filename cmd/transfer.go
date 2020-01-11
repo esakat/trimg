@@ -124,11 +124,9 @@ Get image paths from kubernetes manifest:
 			var imagePaths []string
 			for _, y := range yamls {
 				images, err := pkg.GetUsingImages(y)
-				if err != nil {
-					fmt.Printf("%v\n", err)
-					os.Exit(1)
+				if err == nil {
+					imagePaths = append(imagePaths, images...)
 				}
-				imagePaths = append(imagePaths, images...)
 			}
 
 			imagePaths = removeDuplicateImage(imagePaths)
