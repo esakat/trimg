@@ -48,7 +48,12 @@ get the value of the image from the manifest file and replace it to the path of 
 		}
 
 		if accountId == "" {
-			svc := sts.New(session.New(&aws.Config{Region: aws.String(region)}))
+			sess, err := session.NewSession(&aws.Config{Region: aws.String(region)})
+			if err != nil {
+				fmt.Printf("Error creating AWS session: %v\n", err)
+				os.Exit(1)
+			}
+			svc := sts.New(sess)
 			t, err := svc.GetCallerIdentity(&sts.GetCallerIdentityInput{})
 			if err != nil {
 				fmt.Printf("%v\n", err)

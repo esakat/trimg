@@ -22,7 +22,6 @@ import (
 )
 
 var (
-	cfgFile   string
 	accountId string
 )
 
@@ -48,6 +47,3 @@ func Execute() {
 }
 
 func init() {}
-
-// initConfig reads in config file and ENV variables if set.
-func initConfig() {}
