@@ -25,10 +25,10 @@ import (
 
 func ParseMultiDocYaml(filepath string) ([]map[interface{}]interface{}, error) {
 	f, err := os.Open(filepath)
-	defer f.Close()
 	if err != nil {
 		return nil, err
 	}
+	defer f.Close()
 
 	dec := yaml.NewDecoder(f)
 

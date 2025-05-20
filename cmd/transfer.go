@@ -59,7 +59,12 @@ Get image paths from kubernetes manifest:
 		}
 
 		if accountId == "" {
-			svc := sts.New(session.New(&aws.Config{Region: aws.String(region)}))
+			sess, err := session.NewSession(&aws.Config{Region: aws.String(region)})
+			if err != nil {
+				fmt.Printf("Error creating AWS session: %v\n", err)
+				os.Exit(1)
+			}
+			svc := sts.New(sess)
 			t, err := svc.GetCallerIdentity(&sts.GetCallerIdentityInput{})
 			if err != nil {
 				fmt.Printf("%v\n", err)
@@ -107,7 +112,7 @@ Get image paths from kubernetes manifest:
 				wg.Wait()
 
 				// output result
-				for i, _ := range args {
+				for i := range args {
 					msg := <-resultMsg
 					fmt.Printf("%d: %s\n", i+1, msg)
 				}
@@ -162,7 +167,7 @@ Get image paths from kubernetes manifest:
 				wg.Wait()
 
 				// output result
-				for i, _ := range imagePaths {
+				for i := range imagePaths {
 					msg := <-resultMsg
 					fmt.Printf("%d: %s\n", i+1, msg)
 				}

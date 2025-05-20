@@ -94,8 +94,7 @@ func TestGetUsingImagesDeployment(t *testing.T) {
 	deployment, _ := ParseMultiDocYaml("../testfiles/input/deployment.yml")
 	actualDeployment, err := GetUsingImages(deployment[0])
 	if err != nil {
-		t.Fatalf(err.Error())
-		t.Fatalf("failed to get deployment images")
+		t.Fatal(err)
 	}
 	expectedDeployment := []string{"nginx:latest", "nginx:latest", "initImage:latest"}
 	if len(expectedDeployment) != len(actualDeployment) {
@@ -117,8 +116,7 @@ func TestGetUsingImagesPod(t *testing.T) {
 	pod, _ := ParseMultiDocYaml("../testfiles/input/pod.yml")
 	actualPod, err := GetUsingImages(pod[0])
 	if err != nil {
-		t.Fatalf(err.Error())
-		t.Fatalf("failed to get pod images")
+		t.Fatal(err)
 	}
 	expectedPod := []string{"nginx", "initPod:v2.0.0"}
 	if len(expectedPod) != len(actualPod) {
@@ -140,8 +138,7 @@ func TestGetUsingImagesJob(t *testing.T) {
 	job, _ := ParseMultiDocYaml("../testfiles/input/job.yml")
 	actualJob, err := GetUsingImages(job[0])
 	if err != nil {
-		t.Fatalf(err.Error())
-		t.Fatalf("failed to get job images")
+		t.Fatal(err)
 	}
 	expectedJob := []string{"perl"}
 	if len(expectedJob) != len(actualJob) {
@@ -163,8 +160,7 @@ func TestGetUsingImagesCronJob(t *testing.T) {
 	cronJob, _ := ParseMultiDocYaml("../testfiles/input/cronjob.yml")
 	actualCronJob, err := GetUsingImages(cronJob[0])
 	if err != nil {
-		t.Fatalf(err.Error())
-		t.Fatalf("failed to get cronJob images")
+		t.Fatal(err)
 	}
 	expectedCronJob := []string{"redis", "busybox"}
 	if len(expectedCronJob) != len(actualCronJob) {
@@ -186,8 +182,7 @@ func TestGetUsingImagesReplicaset(t *testing.T) {
 	replicaset, _ := ParseMultiDocYaml("../testfiles/input/replicaset.yml")
 	actualReplicaset, err := GetUsingImages(replicaset[0])
 	if err != nil {
-		t.Fatalf(err.Error())
-		t.Fatalf("failed to get replicaset images")
+		t.Fatal(err)
 	}
 	expectedReplicaset := []string{"gcr.io/google_samples/gb-frontend:v3"}
 	if len(expectedReplicaset) != len(actualReplicaset) {
@@ -230,8 +225,7 @@ func TestReplaceUsingImagesDeployment(t *testing.T) {
 	deployment, _ := ParseMultiDocYaml("../testfiles/input/deployment.yml")
 	actualManifest, err := ReplaceUsingImages(deployment[0], "ap-northeast-1", "111222333444")
 	if err != nil {
-		t.Fatalf(err.Error())
-		t.Fatalf("failed to replace manifest")
+		t.Fatal(err)
 	}
 
 	f, _ := os.Open("../testfiles/expected/replaceDeployment.yml")
@@ -240,7 +234,9 @@ func TestReplaceUsingImagesDeployment(t *testing.T) {
 	dec := yaml.NewDecoder(f)
 
 	var expectedManifest map[interface{}]interface{}
-	dec.Decode(&expectedManifest)
+	if err := dec.Decode(&expectedManifest); err != nil {
+		t.Fatalf("failed to decode expected manifest: %v", err)
+	}
 
 	if !reflect.DeepEqual(actualManifest, expectedManifest) {
 		t.Fatalf("expected: %v, got: %v", expectedManifest, actualManifest)
@@ -251,8 +247,7 @@ func TestReplaceUsingImagesPod(t *testing.T) {
 	pod, _ := ParseMultiDocYaml("../testfiles/input/pod.yml")
 	actualManifest, err := ReplaceUsingImages(pod[0], "ap-northeast-1", "333222333444")
 	if err != nil {
-		t.Fatalf(err.Error())
-		t.Fatalf("failed to replace manifest")
+		t.Fatal(err)
 	}
 
 	f, _ := os.Open("../testfiles/expected/replacePod.yml")
@@ -261,7 +256,9 @@ func TestReplaceUsingImagesPod(t *testing.T) {
 	dec := yaml.NewDecoder(f)
 
 	var expectedManifest map[interface{}]interface{}
-	dec.Decode(&expectedManifest)
+	if err := dec.Decode(&expectedManifest); err != nil {
+		t.Fatalf("failed to decode expected manifest: %v", err)
+	}
 
 	if !reflect.DeepEqual(actualManifest, expectedManifest) {
 		t.Fatalf("expected: %v, got: %v", expectedManifest, actualManifest)
@@ -272,8 +269,7 @@ func TestReplaceUsingImagesCronJob(t *testing.T) {
 	cronjob, _ := ParseMultiDocYaml("../testfiles/input/cronjob.yml")
 	actualManifest, err := ReplaceUsingImages(cronjob[0], "us-west-1", "999222333444")
 	if err != nil {
-		t.Fatalf(err.Error())
-		t.Fatalf("failed to replace manifest")
+		t.Fatal(err)
 	}
 
 	f, _ := os.Open("../testfiles/expected/replaceCronjob.yml")
@@ -282,7 +278,9 @@ func TestReplaceUsingImagesCronJob(t *testing.T) {
 	dec := yaml.NewDecoder(f)
 
 	var expectedManifest map[interface{}]interface{}
-	dec.Decode(&expectedManifest)
+	if err := dec.Decode(&expectedManifest); err != nil {
+		t.Fatalf("failed to decode expected manifest: %v", err)
+	}
 
 	if !reflect.DeepEqual(actualManifest, expectedManifest) {
 		t.Fatalf("expected: %v, got: %v", expectedManifest, actualManifest)

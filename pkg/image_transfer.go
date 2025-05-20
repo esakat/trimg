@@ -31,7 +31,7 @@ import (
 	"github.com/docker/docker/client"
 	"github.com/docker/docker/pkg/jsonmessage"
 	"github.com/vbauerster/mpb"
-	"io/ioutil"
+	"io"
 	"strings"
 	"sync"
 	"time"
@@ -86,7 +86,10 @@ func ImageTransfer(pullImageName, region, accountId string, wg *sync.WaitGroup, 
 	}
 	defer resp.Close()
 
-	jsonmessage.DisplayJSONMessagesStream(resp, ioutil.Discard, 0, false, nil)
+	if err := jsonmessage.DisplayJSONMessagesStream(resp, io.Discard, 0, false, nil); err != nil {
+		resultMsg <- fmt.Sprintf("%s failed to transfer. error message: %v", pullImageName, err)
+		return
+	}
 
 	scanner := bufio.NewScanner(resp)
 	for scanner.Scan() {
@@ -94,7 +97,7 @@ func ImageTransfer(pullImageName, region, accountId string, wg *sync.WaitGroup, 
 	bar.Increment()
 
 	// Step2. Create repository in ECR
-	ecrSvc := ecr.New(session.New(&aws.Config{Region: aws.String(region)}))
+	ecrSvc := ecr.New(session.Must(session.NewSession(&aws.Config{Region: aws.String(region)})))
 	repositoryInfo := ecr.CreateRepositoryInput{
 		RepositoryName: aws.String(image.RepositoryName),
 	}
